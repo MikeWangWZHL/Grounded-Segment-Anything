@@ -120,9 +120,6 @@ def save_mask_data(output_dir, mask_list, box_list, label_list):
     # Convert the PyTorch tensor to a PIL Image
     mask_pil = Image.fromarray(mask_img.numpy().astype(np.uint8))
 
-    # # Convert to 'P' mode and use a default palette
-    # mask_pil = mask_pil.convert('P')
-
     # Applying a built-in palette. "WEB" is a web-safe palette, which is quite colorful.
     mask_pil.putpalette(davis_palette_np)
 
