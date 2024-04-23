@@ -294,8 +294,9 @@ if __name__ == "__main__":
     boxes_filt = boxes_filt[nms_idx]
     pred_phrases = [pred_phrases[idx] for idx in nms_idx]
     print(f"After NMS: {boxes_filt.shape[0]} boxes")
-    tags_chinese = check_tags_chinese(tags_chinese, pred_phrases)
-    print(f"Revise tags_chinese with number: {tags_chinese}")
+    
+    # tags_chinese = check_tags_chinese(tags_chinese, pred_phrases)
+    # print(f"Revise tags_chinese with number: {tags_chinese}")
 
     transformed_boxes = predictor.transform.apply_boxes_torch(boxes_filt, image.shape[:2]).to(device)
 

@@ -28,6 +28,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+from palette import davis_palette_np, youtube_palette_np
+
 
 def load_image(image_path):
     # load image
@@ -110,9 +112,24 @@ def show_box(box, ax, label):
 def save_mask_data(output_dir, mask_list, box_list, label_list):
     value = 0  # 0 for background
 
-    mask_img = torch.zeros(mask_list.shape[-2:])
+    # Assuming mask_list is a batch of masks [batch_size, 1, H, W]
+    mask_img = torch.zeros(mask_list.shape[-2:], dtype=torch.uint8)
     for idx, mask in enumerate(mask_list):
-        mask_img[mask.cpu().numpy()[0] == True] = value + idx + 1
+        mask_img[mask.squeeze() == True] = value + idx + 1
+
+    # Convert the PyTorch tensor to a PIL Image
+    mask_pil = Image.fromarray(mask_img.numpy().astype(np.uint8))
+
+    # # Convert to 'P' mode and use a default palette
+    # mask_pil = mask_pil.convert('P')
+
+    # Applying a built-in palette. "WEB" is a web-safe palette, which is quite colorful.
+    mask_pil.putpalette(davis_palette_np)
+
+    # Save as PNG in 'P' mode
+    mask_pil.save(os.path.join(output_dir, 'mask_p.png'))
+
+    # == save jpg visualization == #
     plt.figure(figsize=(10, 10))
     plt.imshow(mask_img.numpy())
     plt.axis('off')
